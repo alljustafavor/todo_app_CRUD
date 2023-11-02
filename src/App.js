@@ -1,23 +1,52 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
+
+
+import { getTodos, postTodo, putTodo, deleteTodo } from './actions/todos';
 import './App.css';
 
 function App() {
+  const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState('');
+
+  const getData = () => {
+    getTodos().then(setTodos);
+  };
+  
+  const addTodo = () => {
+    postTodo(todo).then(getData);
+  };
+
+  const completeTodo = (todo) => {
+    const newTodo = {...todo, isDone: true}
+    putTodo(newTodo).then(() => {
+      getData();
+    })
+  };
+
+  const delTodo = (todo) => {
+    deleteTodo(todo).then(() => {
+      getData();
+    })
+  };
+  
+  useEffect(() => { getData() }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input value={todo} onChange={(e) => setTodo(e.target.value)} />
+      <button onClick={e => addTodo()} >Submit</button>
+      {
+        todos.map((td, index) => {
+          return (
+            <div key={index}>
+              <span className={td.isDone ? 'done' : ''}>{td.description}</span>
+              <span>
+                {td.isDone ? <button onClick={() => delTodo(td)}>delete</button> : <button onClick={() => completeTodo(td)}>complete</button>}
+              </span>
+            </div>
+          )
+        })
+      }
     </div>
   );
 }
