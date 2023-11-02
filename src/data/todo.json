@@ -1,7 +1,7 @@
 {
   "todo": [
     {
-      "description": "neetcode",
+      "description": "Add New Todo",
       "isDone": false,
       "id": 1
     }
